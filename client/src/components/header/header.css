@@ -1,60 +1,25 @@
 header {
-  padding: 10px;
+  padding: 40px;
+  font-family: var(--font);
   border-bottom: var(--border);
   background-color: var(--bg2);
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logo {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
 }
 .header {
-  font-family: var(--titleFont);
   font-weight: 900;
   text-decoration: none;
   color: inherit;
 }
 header img {
-  width: 100px;
-}
-.firstRow {
-  font-size: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  margin-bottom: 10px;
-}
-.secondRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-.innerRow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: fit-content;
-}
-.innerRow input {
-  text-align: center;
-  width: 60px;
-}
-.cameras,
-.inputArea {
-  border: var(--border);
-  padding: 5px;
-  background-color: var(--text);
-  color: var(--bg);
-  font-size: 1.5rem;
-  text-align: center;
-  min-width: 60px;
-}
-.connected,
-.disconnected {
-  border: var(--border);
-  padding: 5px;
-  color: white;
-}
-.connected {
-  background-color: darkgreen;
-}
-.disconnected {
-  background-color: darkred;
+  width: 50px;
 }

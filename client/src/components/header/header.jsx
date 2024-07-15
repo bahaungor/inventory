@@ -21,35 +21,10 @@ export default function Header() {
   // YOU CAN USE STATE WHICH YOU ASSIGNED FETCHED DATA ABOVE
   return (
     <header>
-      <div className="firstRow">
-        <Link to="/" className="header">A.S.P.I.R.E.</Link>
-        <img src="/favicon.ico" alt="logo" />
-        <ThemeSwitch />
-      </div>
-      <div className="secondRow">
-        <div className={`galc ${GALCConnection ? 'connected' : 'disconnected'}`}>
-          {GALCConnection ? 'GALC Connected' : 'GALC Disconnected'}
-        </div>
-        <div className="innerRow">
-          <div className="cameras">Assy No:</div>
-          <input className="inputArea" name="processAssyNo" type="number" value={assyNo} />
-        </div>
-        <div className="innerRow">
-          <div className="cameras">Body No:</div>
-          <div className="inputArea">{bodyNo}</div>
-        </div>
-        <div className="innerRow">
-          <div className="cameras">Model:</div>
-          <div className="inputArea">{model}</div>
-        </div>
-        <div className="innerRow">
-          <div className="cameras">Encoder:</div>
-          <div className="inputArea">{encoder}</div>
-        </div>
-        <div className="cameras">{`${cameraCount} Cameras Connected`}</div>
-        <div className={`galc ${PLCConnection ? 'connected' : 'disconnected'}`}>
-          {PLCConnection ? 'PLC Connected' : 'PLC Disconnected'}
-        </div>
+      <ThemeSwitch />
+      <div className="logo">
+        <Link to="/" className="header">FakeShop</Link>
+        <img src="./favicon.ico" alt="logo" />
       </div>
     </header>
   );

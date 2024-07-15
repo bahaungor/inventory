@@ -1,0 +1,7 @@
+.content {
+  flex: 1;
+  padding: 40px;
+  max-width: 1700px;
+  width: 100%;
+  margin: 0px auto;
+}
