@@ -1,0 +1,87 @@
+@font-face {
+  font-family: 'Jost';
+  src: url('../fonts/Jost-Regular.ttf'); /* Place Jost-Regular.ttf inside assets/fonts folder */
+  font-weight: normal;
+}
+@font-face {
+  font-family: 'Unbounded';
+  src: url('../fonts/Unbounded-Regular.ttf'); /* Place Unbounded-Regular.ttf inside assets/fonts */
+  font-weight: normal;
+}
+:root.dark {
+  --border: 1px solid whitesmoke;
+  --bg: rgb(0, 0, 0);
+  --bg2: rgb(29, 29, 29);
+  --bg3: rgb(39, 39, 39);
+  --text: white;
+  --lightgray: #f0eef1;
+  --green: rgb(105, 247, 105);
+  --red: rgb(255, 118, 118);
+  --navy: rgb(21, 101, 192);
+  --blue: rgb(33, 150, 243);
+  --navyToBlue: linear-gradient(to right, var(--navy), var(--blue));
+  --shadow: 0px 2px 2px lightgray;
+  --gray: rgb(94, 94, 94);
+  --font: 'Jost', sans-serif;
+  --titleFont: 'Unbounded', sans-serif;
+}
+:root {
+  --border: 1px solid black;
+  --bg: rgb(255, 255, 255);
+  --bg2: rgb(250, 250, 250);
+  --bg3: rgb(245, 245, 245);
+  --text: black;
+  --lightgray: #f0eef1;
+  --green: rgb(105, 247, 105);
+  --red: rgb(255, 118, 118);
+  --navy: rgb(21, 101, 192);
+  --blue: rgb(33, 150, 243);
+  --navyToBlue: linear-gradient(to right, var(--navy), var(--blue));
+  --shadow: 0px 2px 2px lightgray;
+  --gray: rgb(94, 94, 94);
+  --font: 'Jost', sans-serif;
+  --titleFont: 'Unbounded', sans-serif;
+}
+body {
+  font-family: var(--font);
+  background-color: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/*
+  Loading Animation Implementation:
+  <div className="loading">
+    <div className="spinner"></div>
+  </div>
+  */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Full width */
+  height: 80vh; /* Full height */
+}
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  border-top-color: #000;
+  animation: spin 1s ease-in-out infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
