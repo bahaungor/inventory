@@ -1,0 +1,21 @@
+.buttonContainer {
+  padding: 50px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.buttonContainer button {
+  border: var(--border);
+  padding: 10px 20px;
+  color: var(--text);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  font-size: 1.3rem;
+}
+
+.buttonContainer .selected {
+  box-shadow: none;
+  background-color: var(--bg3);
+}

@@ -23,7 +23,7 @@ export default function Header() {
     <header>
       <ThemeSwitch />
       <div className="logo">
-        <Link to="/" className="header">FakeShop</Link>
+        <Link to="/" className="header">Inventory App</Link>
         <img src="./favicon.ico" alt="logo" />
       </div>
     </header>

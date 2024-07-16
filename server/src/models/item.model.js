@@ -6,6 +6,18 @@ const ItemSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+  createdBy: { type: String, default: 'User' },
+
+  // Additional fields for tracing and context
+  createdAt: { type: Date, default: Date.now },
+  createdByIP: { type: String },
+  createdByUserAgent: { type: String },
+  referer: { type: String },
+  metadata: {
+    browser: { type: String },
+    platform: { type: String },
+    device: { type: String },
+  },
 });
 
 // ACCESS VIRTUALS FROM REACT APP
