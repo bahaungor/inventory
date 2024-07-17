@@ -67,7 +67,7 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%; /* Full width */
-  height: 80vh; /* Full height */
+  height: 50vh; /* Full height */
 }
 .spinner {
   width: 50px;

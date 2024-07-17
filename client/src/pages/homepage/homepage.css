@@ -1,0 +1,29 @@
+.welcomeText {
+  display: flex;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+.welcomeText h1 + p {
+  margin-bottom: 40px;
+}
+.welcomeText ul {
+  list-style-type: '\2B50';
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+.container button {
+  border: var(--border);
+  padding: 10px 20px;
+  color: var(--text);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  font-size: 1.3rem;
+}
+.container button:active {
+  box-shadow: none;
+  background-color: var(--bg3);
+}

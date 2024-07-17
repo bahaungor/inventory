@@ -9,29 +9,18 @@ import Content from '../../components/content/content';
 import Footer from '../../components/footer/footer';
 // import { Menubtn, Sidebar } from '../../components/sidebar/sidebar';
 
-// IMPORT CONTEXTS TO CONSUME
-import { MyContext } from '../../contexts/myContexts';
-
 // IMPORT MAIN CSS TO LAYOUT
 import '../../assets/styles/global.css';
 import '../../assets/styles/reset.css';
 
-// IMPORT EXTERNAL CSS
-import './plainLayout.css';
-
 export default function PlainLayout() {
-  const [selected, setSelected] = useState(MyContext);
+  const [selected, setSelected] = useState(null);
 
   return (
     <>
-      <Header />
-      <div className="buttonContainer">
-        <button type="button" onClick={() => setSelected(0)} className={selected === 0 ? `selected` : ''}>Categoties</button>
-        <button type="button" onClick={() => setSelected(1)} className={selected === 1 ? `selected` : ''}>Items</button>
-        {/* <div>{selected}</div> */}
-      </div>
+      <Header selected={selected} setSelected={setSelected} />
       <Content>
-        <Outlet />
+        <Outlet context={[selected, setSelected]} />
       </Content>
       <Footer />
     </>

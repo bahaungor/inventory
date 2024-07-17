@@ -1,12 +1,11 @@
-.buttonContainer {
-  padding: 50px;
+.formContainer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  gap: 30px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
 }
-
-.buttonContainer button {
+.formContainer button {
   border: var(--border);
   padding: 10px 20px;
   color: var(--text);
@@ -14,8 +13,7 @@
   box-shadow: var(--shadow);
   font-size: 1.3rem;
 }
-
-.buttonContainer .selected {
+.formContainer button:active {
   box-shadow: none;
   background-color: var(--bg3);
 }
