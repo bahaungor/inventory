@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const CategorySchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
+  imageURL: { type: String, required: true },
   createdBy: { type: String, default: 'User' },
 
   // Additional fields for tracing and context

@@ -5,7 +5,9 @@
   align-items: center;
   gap: 20px;
 }
-.formContainer button {
+.formContainer button,
+.formContainer input,
+.formContainer select {
   border: var(--border);
   padding: 10px 20px;
   color: var(--text);
