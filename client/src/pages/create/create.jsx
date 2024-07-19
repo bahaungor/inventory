@@ -7,10 +7,14 @@ import './create.css';
 const API_URL = import.meta.env.VITE_NODE_SERVER || '';
 
 export default function Create() {
-  const [categories, setCategories] = useState([]);
+  // CREATE NAVIGATOR
+  const navigate = useNavigate();
+
+  // IMPORT OUTLET CONTEXT
   const [selected, setSelected] = useOutletContext();
 
-  // CREATE STATE FOR EACH FORM DATA
+  // CREATE STATE FOR DATA TO FETCH FROM DB & FORM DATA
+  const [categories, setCategories] = useState([]);
   const [formField, setformField] = useState({
     name: '',
     description: '',
@@ -35,19 +39,24 @@ export default function Create() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
+    // MUST STEP TO HANDLE MULTIPART FORM DATA (FORM DATA WITH FILE UPLOAD)
       const formData = new FormData();
       formData.append('name', formField.name);
       formData.append('description', formField.description);
       formData.append('image', formField.image);
       formData.append('category', formField.category);
-      console.log(formData);
+
       const response = await fetch(`${API_URL}/create/${selected}`, {
         method: 'POST',
         // headers: { 'Content-Type': 'application/json' },
         body: formData,
       });
 
-      response.ok && setformField({ name: '', description: '', category: '' });
+      if (response.ok) {
+        setformField({ name: '', description: '', category: '' });
+        document.querySelectorAll('input[type="file"]').forEach(box => box.value = null);
+        navigate('/');
+      }
     }
     catch (error) {
       console.error('Error submitting form:', error);
@@ -55,7 +64,6 @@ export default function Create() {
   }
 
   const handleChange = (e) => {
-    console.warn(formField);
     const { name, value, type, checked, options } = e.target;
     type === 'checkbox'
       ? setformField({ ...formField, [name]: checked })
