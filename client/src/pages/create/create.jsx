@@ -26,12 +26,12 @@ export default function Create() {
   useEffect(() => {
     (async () => {
       try {
-        const blob = await fetch(`${API_URL}/Categories`);
+        const blob = await fetch(`${API_URL}/inventory/Category`);
         const json = await blob.json();
         setCategories(json.result);
       }
       catch (error) {
-        console.error('Error fetching vehicle data:', error);
+        console.error('Error fetching categories:', error);
       }
     })();
   }, []); // RUN EFFECT ONCE ON MOUNT & IF VALUE INSIDE [] CHANGES

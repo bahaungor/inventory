@@ -1,15 +1,35 @@
 import { useEffect, useState } from 'react';
 
+// useNavigate → TO NAVIGATE ANOTHER PAGE | useOutletContext → ACCESS
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 // IMPORT EXTERNAL CSS
 import './homepage.css';
 
+// IMPORT ENV VARIABLES
+const API_URL = import.meta.env.VITE_NODE_SERVER || '';
+
 export default function Homepage() {
+  // CREATE NAVIGATOR
   const navigate = useNavigate();
 
   const [selected, setSelected] = useOutletContext();
   const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      if (selected) {
+        try {
+          const blob = await fetch(`${API_URL}/inventory/${selected}`);
+          const json = await blob.json();
+          setItems(json.result);
+        }
+        catch (error) {
+          console.error('Error fetching categories:', error);
+        }
+      }
+    })();
+  }, [selected]); // RUN EFFECT ONCE ON MOUNT & IF VALUE INSIDE [] CHANGES
 
   function handleClick() {
     navigate('/create');
@@ -51,7 +71,13 @@ export default function Homepage() {
           </button>
           <div className="itemContainer">
             {items.length
-              ? items.map(item => <div key={item._id}>item.name</div>)
+              ? items.map(item => (
+                <div key={item._id} className="item">
+                  <div className="imgContainer"><img src={item.imageURL} alt={item.name} /></div>
+                  <div className="itemText">{item.name}</div>
+                </div>
+              ),
+              )
               : (
                   <div className="loading">
                     <div className="spinner"></div>

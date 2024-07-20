@@ -20,7 +20,7 @@
   --navy: rgb(21, 101, 192);
   --blue: rgb(33, 150, 243);
   --navyToBlue: linear-gradient(to right, var(--navy), var(--blue));
-  --shadow: 0px 2px 2px lightgray;
+  --shadow: 0px 5px 5px lightgray;
   --gray: rgb(94, 94, 94);
   --font: 'Jost', sans-serif;
   --titleFont: 'Unbounded', sans-serif;
@@ -37,7 +37,7 @@
   --navy: rgb(21, 101, 192);
   --blue: rgb(33, 150, 243);
   --navyToBlue: linear-gradient(to right, var(--navy), var(--blue));
-  --shadow: 0px 2px 2px lightgray;
+  --shadow: 0px 5px 5px lightgray;
   --gray: rgb(94, 94, 94);
   --font: 'Jost', sans-serif;
   --titleFont: 'Unbounded', sans-serif;
