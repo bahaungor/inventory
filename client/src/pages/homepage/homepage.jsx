@@ -36,10 +36,10 @@ export default function Homepage() {
   }
 
   return (
-    <div className="welcomeText">
+    <div>
       { selected === null
       && (
-        <div>
+        <div className="welcomeText">
           <h1>Welcome to Your Simple Inventory App!</h1>
           <p>This app allows you to easily track your belongings by category and item.</p>
 
@@ -69,21 +69,26 @@ export default function Homepage() {
             {' '}
             {selected}
           </button>
-          <div className="itemContainer">
-            {items.length
-              ? items.map(item => (
-                <div key={item._id} className="item">
-                  <div className="imgContainer"><img src={item.imageURL} alt={item.name} /></div>
-                  <div className="itemText">{item.name}</div>
+          {items.length
+            ? (
+                <div className="itemContainer">
+                  { items.map(item => (
+                    <div key={item._id} className="item">
+                      <div className="imgContainer">
+                        <img src={item.imageURL} alt={item.name} />
+                      </div>
+                      <div className="itemText">{item.name}</div>
+                    </div>
+                  ),
+                  )}
                 </div>
-              ),
               )
-              : (
-                  <div className="loading">
-                    <div className="spinner"></div>
-                  </div>
-                )}
-          </div>
+            : (
+                <div className="loading">
+                  <div className="spinner"></div>
+                </div>
+              )}
+
         </div>
       )}
     </div>

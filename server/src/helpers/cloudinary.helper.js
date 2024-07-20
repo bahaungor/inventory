@@ -8,8 +8,13 @@ cloudinary.config({
 });
 
 exports.handleUpload = async (file) => {
-  const res = await cloudinary.uploader.upload(file, {
-    resource_type: 'auto',
-  });
-  return res;
+  try {
+    const res = await cloudinary.uploader.upload(file, {
+      resource_type: 'auto',
+    });
+    return res;
+  }
+  catch (error) {
+    console.error('Error uploading image to cloudinary: ', error);
+  }
 };
