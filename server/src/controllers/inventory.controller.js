@@ -4,6 +4,7 @@ const Buffer = require('node:buffer');
 // IMPORT USEFUL MIDDLEWARES
 const asyncHandler = require('express-async-handler');
 const multer = require('multer'); // HANDLE MULTIPART FORM (FORM WITH FILE)
+const sharp = require('sharp'); // OPTIMIZE IMAGES STORED IN MONGODB
 
 // IMPORT MODELS YOU NEED DB INTERACTION
 const Category = require('../models/category.model');
@@ -25,7 +26,7 @@ exports.homepage = asyncHandler(async (req, res, next) => {
   }
 
   if (selected === 'Item') {
-    const result = await Item.find();
+    const result = await Item.find().populate('category');
     res.json({ result });
   }
 });
@@ -52,27 +53,35 @@ exports.create_post = asyncHandler(async (req, res, next) => {
     // console.log('req.file : ', req.file);
     // console.log('req.body : ', req.body);
 
-    const b64 = Buffer.Buffer.from(req.file.buffer).toString('base64');
+    // const b64 = Buffer.Buffer.from(req.file.buffer).toString('base64'); // ORIGINAL IMAGE
+    const resized = await sharp(req.file.buffer).resize({ width: 500 }).webp({ quality: 80 }).toBuffer();
+    const b64 = resized.toString('base64'); // OPTIMIZED IMAGE
     const dataURI = `data:${req.file.mimetype};base64,${b64}`;
     const cldRes = await handleUpload(dataURI);
-    console.log(cldRes);
 
     if (selected === 'Category') {
       await Category.create({
         name: req.body.name,
         description: req.body.description,
         imageURL: cldRes.secure_url,
+        createdByIP: req.ip,
+        createdLang: req.headers['accept-language'],
+        createdRef: req.headers.referer,
       });
     }
 
-    // if (selected === 'Item') {
-    //   await Item.create({
-    //     name: req.body.name,
-    //     description: req.body.description,
-    //     imageURL: cldRes.secure_url,
-    //   });
-    // }
+    if (selected === 'Item') {
+      await Item.create({
+        name: req.body.name,
+        description: req.body.description,
+        category: req.body.category,
+        imageURL: cldRes.secure_url,
+        createdByIP: req.ip,
+        createdLang: req.headers['accept-language'],
+        createdRef: req.headers.referer,
+      });
+    }
 
-    res.json(cldRes);
+    res.json({ cldRes });
   });
 });

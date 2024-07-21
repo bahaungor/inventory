@@ -12,13 +12,8 @@ const ItemSchema = new mongoose.Schema({
   // Additional fields for tracing and context
   createdAt: { type: Date, default: Date.now },
   createdByIP: { type: String },
-  createdByUserAgent: { type: String },
-  referer: { type: String },
-  metadata: {
-    browser: { type: String },
-    platform: { type: String },
-    device: { type: String },
-  },
+  createdLang: { type: String },
+  createdRef: { type: String },
 });
 
 // ACCESS VIRTUALS FROM REACT APP

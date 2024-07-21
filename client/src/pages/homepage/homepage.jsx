@@ -77,7 +77,11 @@ export default function Homepage() {
                       <div className="imgContainer">
                         <img src={item.imageURL} alt={item.name} />
                       </div>
-                      <div className="itemText">{item.name}</div>
+                      <div className="itemText">
+                        {item.name}
+                        {item.category ? <br /> : null}
+                        {item.category && `(${item.category.name})`}
+                      </div>
                     </div>
                   ),
                   )}

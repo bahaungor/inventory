@@ -88,7 +88,7 @@ export default function Create() {
           <select required name="category" value={formField.category} onChange={handleChange}>
             <option disabled value=""> -- Select a category -- </option>
             {categories.length > 0 && categories.map(cat => (
-              <option key={cat._id} value={cat.name}>{cat.name}</option>
+              <option key={cat._id} value={cat._id}>{cat.name}</option>
             ))}
           </select>
         </div>
