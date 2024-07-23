@@ -7,13 +7,17 @@
 }
 .formContainer button,
 .formContainer input,
-.formContainer select {
+.formContainer select,
+.formContainer textarea {
   border: var(--border);
   padding: 10px 20px;
   color: var(--text);
   border-radius: 10px;
   box-shadow: var(--shadow);
   font-size: 1.3rem;
+}
+.formContainer textarea {
+  height: 300px;
 }
 .formContainer button:active {
   box-shadow: none;

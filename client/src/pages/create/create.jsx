@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
+
+// useNavigate → TO NAVIGATE ANOTHER PAGE | useOutletContext → ACCESS
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
+// IMPORT EXTERNAL CSS
 import './create.css';
 
 // IMPORT ENV VARIABLES
@@ -39,7 +42,7 @@ export default function Create() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-    // MUST STEP TO HANDLE MULTIPART FORM DATA (FORM DATA WITH FILE UPLOAD)
+      // MUST STEP TO HANDLE MULTIPART FORM DATA (FORM DATA WITH FILE UPLOAD)
       const formData = new FormData();
       formData.append('name', formField.name);
       formData.append('description', formField.description);
@@ -48,7 +51,6 @@ export default function Create() {
 
       const response = await fetch(`${API_URL}/create/${selected}`, {
         method: 'POST',
-        // headers: { 'Content-Type': 'application/json' },
         body: formData,
       });
 
@@ -76,13 +78,9 @@ export default function Create() {
 
   return (
     <form action="" method="post" onSubmit={handleSubmit} className="formContainer">
-      <h1>
-        Create New
-        {' '}
-        {selected}
-      </h1>
+      <h1>{`Create New  ${selected}`}</h1>
       <div><input required type="text" name="name" placeholder="Name" value={formField.name} onChange={handleChange} /></div>
-      <div><input required type="text" name="description" placeholder="Description" value={formField.description} onChange={handleChange} /></div>
+      <div><textarea required type="text" name="description" placeholder="Description" value={formField.description} onChange={handleChange} /></div>
       {selected === 'Item' && (
         <div>
           <select required name="category" value={formField.category} onChange={handleChange}>

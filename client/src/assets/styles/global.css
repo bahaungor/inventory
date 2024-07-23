@@ -55,13 +55,12 @@ body {
   flex-direction: column;
   min-height: 100vh;
 }
-
 /*
-  Loading Animation Implementation:
-  <div className="loading">
-    <div className="spinner"></div>
-  </div>
-  */
+    Loading Animation Implementation:
+    <div className="loading">
+      <div className="spinner"></div>
+    </div>
+    */
 .loading {
   display: flex;
   justify-content: center;

@@ -3,15 +3,15 @@ const Buffer = require('node:buffer');
 
 // IMPORT USEFUL MIDDLEWARES
 const asyncHandler = require('express-async-handler');
-const multer = require('multer'); // HANDLE MULTIPART FORM (FORM WITH FILE)
-const sharp = require('sharp'); // OPTIMIZE IMAGES STORED IN MONGODB
+const multer = require('multer'); // HANDLE MULTIPART FORM
+const sharp = require('sharp'); // OPTIMIZE IMAGES
+
+// IMPORT HELPERS
+const { handleUpload } = require('../helpers/cloudinary.helper');
 
 // IMPORT MODELS YOU NEED DB INTERACTION
 const Category = require('../models/category.model');
 const Item = require('../models/item.model');
-
-// IMPORT HELPERS
-const { handleUpload } = require('../helpers/cloudinary.helper');
 
 // DEFINE FUNCTION TO FETCH DATA & SEND INSIDE JSON WHEN CALLED
 exports.homepage = asyncHandler(async (req, res, next) => {
@@ -34,13 +34,10 @@ exports.homepage = asyncHandler(async (req, res, next) => {
 // DEFINE FUNCTION TO FETCH DATA & SEND INSIDE JSON WHEN CALLED
 exports.create_post = asyncHandler(async (req, res, next) => {
   const { selected } = req.params;
-
   if (selected !== 'Category' && selected !== 'Item')
     return;
-
-  // CRAETE VIRTUAL MEMORY FOR FILES TO BE UPLOADED
+    // CRAETE VIRTUAL MEMORY FOR FILES TO BE UPLOADED
   const upload = multer({ storage: multer.memoryStorage() });
-
   // FIND 'image' FIELD IN REQUEST FILE & HANDLE UPLOAD
   upload.single('image')(req, res, async (err) => {
     if (err) {
@@ -48,7 +45,6 @@ exports.create_post = asyncHandler(async (req, res, next) => {
       console.error(err);
       return res.status(400).json({ message: 'Error uploading file' });
     }
-
     // CONSOLE LOG REQ.FILE & REQ.BODY HERE
     // console.log('req.file : ', req.file);
     // console.log('req.body : ', req.body);
@@ -63,7 +59,10 @@ exports.create_post = asyncHandler(async (req, res, next) => {
       await Category.create({
         name: req.body.name,
         description: req.body.description,
-        imageURL: cldRes.secure_url,
+        image: {
+          URL: cldRes.secure_url,
+          cloudinaryID: cldRes.public_id,
+        },
         createdByIP: req.ip,
         createdLang: req.headers['accept-language'],
         createdRef: req.headers.referer,
@@ -75,7 +74,10 @@ exports.create_post = asyncHandler(async (req, res, next) => {
         name: req.body.name,
         description: req.body.description,
         category: req.body.category,
-        imageURL: cldRes.secure_url,
+        image: {
+          URL: cldRes.secure_url,
+          cloudinaryID: cldRes.public_id,
+        },
         createdByIP: req.ip,
         createdLang: req.headers['accept-language'],
         createdRef: req.headers.referer,

@@ -6,10 +6,11 @@ const ItemSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
-  imageURL: { type: String, required: true },
+  image: {
+    URL: { type: String, required: true },
+    cloudinaryID: { type: String, required: true },
+  },
   createdBy: { type: String, default: 'User' },
-
-  // Additional fields for tracing and context
   createdAt: { type: Date, default: Date.now },
   createdByIP: { type: String },
   createdLang: { type: String },

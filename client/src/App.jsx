@@ -7,6 +7,7 @@ import PlainLayout from './layouts/plainLayout/plainLayout';
 import Homepage from './pages/homepage/homepage';
 import ErrorPage from './pages/error/error';
 import Create from './pages/create/create';
+import CategoryDetail from './pages/categoryDetail/categoryDetail';
 
 // DEFINE WHICH REACT PAGE TO SERVE WHEN CERTAIN ROUTE REQ.
 const router = createBrowserRouter([
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       // RENDER element INSIDE <Outlet /> OF PARENT COMPONENT (LAYOUT) WHEN path REQUESTED
       { path: '/', element: <Homepage /> },
       { path: '/create', element: <Create /> },
+      { path: '/Category/:name', element: <CategoryDetail /> },
     ],
   },
 ]);

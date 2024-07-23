@@ -18,3 +18,13 @@ exports.handleUpload = async (file) => {
     console.error('Error uploading image to cloudinary: ', error);
   }
 };
+
+// Function to delete an image by public ID
+exports.handleDelete = async (publicId) => {
+  try {
+    await cloudinary.uploader.destroy(publicId);
+  }
+  catch (error) {
+    console.error('Error deleting image from cloudinary: ', error);
+  }
+};

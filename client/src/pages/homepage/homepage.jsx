@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-// useNavigate → TO NAVIGATE ANOTHER PAGE | useOutletContext → ACCESS
-import { useNavigate, useOutletContext } from 'react-router-dom';
+// Link & useNavigate → TO NAVIGATE ANOTHER PAGE | useOutletContext → ACCESS
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 
 // IMPORT EXTERNAL CSS
 import './homepage.css';
@@ -13,6 +13,7 @@ export default function Homepage() {
   // CREATE NAVIGATOR
   const navigate = useNavigate();
 
+  // IMPORT OUTLET CONTEXT
   const [selected, setSelected] = useOutletContext();
   const [items, setItems] = useState([]);
 
@@ -25,7 +26,7 @@ export default function Homepage() {
           setItems(json.result);
         }
         catch (error) {
-          console.error('Error fetching categories:', error);
+          console.error('Error fetching categories or items:', error);
         }
       }
     })();
@@ -42,9 +43,7 @@ export default function Homepage() {
         <div className="welcomeText">
           <h1>Welcome to Your Simple Inventory App!</h1>
           <p>This app allows you to easily track your belongings by category and item.</p>
-
           <h2>Getting Started</h2>
-
           <ul>
             <li>Create new categories to organize your items (e.g., Electronics, Clothing, Tools).</li>
             <li>Add items to each category (e.g., Laptop, Shirt, Hammer).</li>
@@ -59,30 +58,20 @@ export default function Homepage() {
       )}
       {selected !== null && (
         <div className="container">
-          <h1>
-            {selected}
-            {' '}
-            List
-          </h1>
-          <button type="button" onClick={handleClick}>
-            Create
-            {' '}
-            {selected}
-          </button>
+          <h1>{`${selected} List`}</h1>
+          <button type="button" onClick={handleClick}>{`Create ${selected}`}</button>
           {items.length
             ? (
                 <div className="itemContainer">
                   { items.map(item => (
-                    <div key={item._id} className="item">
-                      <div className="imgContainer">
-                        <img src={item.imageURL} alt={item.name} />
-                      </div>
+                    <Link to={`/${selected}/${item.name}`} key={item._id} className="item">
+                      <div className="imgContainer"><img src={item.image.URL} alt={item.name} /></div>
                       <div className="itemText">
                         {item.name}
                         {item.category ? <br /> : null}
                         {item.category && `(${item.category.name})`}
                       </div>
-                    </div>
+                    </Link>
                   ),
                   )}
                 </div>
@@ -92,7 +81,6 @@ export default function Homepage() {
                   <div className="spinner"></div>
                 </div>
               )}
-
         </div>
       )}
     </div>

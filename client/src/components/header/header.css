@@ -1,6 +1,6 @@
 header {
   padding: 40px;
-  font-family: var(--font);
+  font-family: var(--titleFont);
   border-bottom: var(--border);
   background-color: var(--bg2);
   font-size: 1.7rem;
@@ -31,7 +31,6 @@ header img {
   gap: 30px;
   flex-wrap: wrap;
 }
-
 .buttonContainer button {
   border: var(--border);
   padding: 10px 20px;
@@ -40,7 +39,6 @@ header img {
   box-shadow: var(--shadow);
   font-size: 1.3rem;
 }
-
 .buttonContainer .selected {
   box-shadow: none;
   background-color: var(--bg3);
