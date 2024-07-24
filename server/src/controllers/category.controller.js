@@ -11,23 +11,41 @@ const Category = require('../models/category.model');
 const Item = require('../models/item.model');
 
 // DEFINE FUNCTION TO FETCH DATA & SEND INSIDE JSON WHEN CALLED
-exports.category_get = asyncHandler(async (req, res, next) => {
-  const { name } = req.params;
+exports.item_get = asyncHandler(async (req, res, next) => {
+  const { selected, name } = req.params;
 
-  const category = await Category.findOne({ name });
-  const items = await Item.find({ category: category._id });
-
-  res.json({ category, items });
+  if (selected === 'Category') {
+    const category = await Category.findOne({ name });
+    const items = await Item.find({ category: category._id });
+    res.json({ category, items });
+  }
+  else {
+    const item = await Item.findOne({ name }).populate('category');
+    res.json({ item });
+  }
 });
 
-exports.category_delete = asyncHandler(async (req, res, next) => {
-  await Category.findByIdAndDelete(req.params.id);
+exports.item_delete = asyncHandler(async (req, res, next) => {
+  const { selected, imageID } = req.params;
+
+  if (selected === 'Category') {
+    await Promise.all([
+      Category.findByIdAndDelete(req.params.id),
+      handleDelete(imageID),
+    ]);
+  }
+
+  if (selected === 'Item') {
+    await Promise.all([
+      Item.findByIdAndDelete(req.params.id),
+      handleDelete(imageID),
+    ]);
+  }
+
   res.json({ result: 'Success' });
 });
 
-exports.category_modify = asyncHandler(async (req, res, next) => {
-  await Category.findByIdAndUpdate(req.params.id, {});
-
+exports.item_modify = asyncHandler(async (req, res, next) => {
   // CRAETE VIRTUAL MEMORY FOR FILES TO BE UPLOADED
   const upload = multer({ storage: multer.memoryStorage() });
 
@@ -39,10 +57,11 @@ exports.category_modify = asyncHandler(async (req, res, next) => {
     }
 
     // CONSOLE LOG REQ.FILE & REQ.BODY HERE
-    // console.log('req.file : ', req.file);
-    // console.log('req.body : ', req.body);
+    console.log('req.file : ', req.file);
+    console.log('req.body : ', req.body);
 
     if (req.file) {
+      // const b64 = Buffer.Buffer.from(req.file.buffer).toString('base64'); // ORIGINAL IMAGE
       const resized = await sharp(req.file.buffer).resize({ width: 500 }).webp({ quality: 80 }).toBuffer();
       const b64 = resized.toString('base64'); // OPTIMIZED IMAGE
       const dataURI = `data:${req.file.mimetype};base64,${b64}`;
@@ -50,16 +69,40 @@ exports.category_modify = asyncHandler(async (req, res, next) => {
         handleUpload(dataURI),
         handleDelete(req.body.imageID),
       ]);
-      const category = await Category.findByIdAndUpdate(req.body.id, {
-        name: req.body.name,
-        description: req.body.description,
-        image: { URL: cldRes.secure_url, cloudinaryID: cldRes.public_id },
-      }, { new: true });
-      res.json({ category });
+      if (req.params.selected === 'Category') {
+        const result = await Category.findByIdAndUpdate(req.body.id, {
+          name: req.body.name,
+          description: req.body.description,
+          image: { URL: cldRes.secure_url, cloudinaryID: cldRes.public_id },
+        }, { new: true });
+        res.json({ result });
+      }
+      else {
+        const result = await Item.findByIdAndUpdate(req.body.id, {
+          name: req.body.name,
+          description: req.body.description,
+          image: { URL: cldRes.secure_url, cloudinaryID: cldRes.public_id },
+        }, { new: true });
+        res.json({ result });
+      }
     }
     else {
-      const category = await Category.findByIdAndUpdate(req.body.id, { name: req.body.name, description: req.body.description }, { new: true });
-      res.json({ category });
+      if (req.params.selected === 'Category') {
+        const result = await Category.findByIdAndUpdate(
+          req.body.id,
+          { name: req.body.name, description: req.body.description },
+          { new: true },
+        );
+        res.json({ result });
+      }
+      else {
+        const result = await Item.findByIdAndUpdate(
+          req.body.id,
+          { name: req.body.name, description: req.body.description },
+          { new: true },
+        );
+        res.json({ result });
+      }
     }
   });
 });

@@ -9,7 +9,7 @@ import './categoryDetail.css';
 // IMPORT ENV VARIABLES
 const API_URL = import.meta.env.VITE_NODE_SERVER || '';
 
-export default function CategoryDetail() {
+export default function ItemDetail() {
   // CREATE NAVIGATOR
   const navigate = useNavigate();
 
@@ -20,7 +20,7 @@ export default function CategoryDetail() {
   const [selected, setSelected] = useOutletContext();
 
   // CREATE STATES FOR DATA YOU WILL FETCH FROM DATABASE
-  const [category, setCategory] = useState([]);
+  const [item, setItem] = useState([]);
   const [items, setItems] = useState([]);
 
   // CREATE STATES FOR FORM DATA & EDIT MODE
@@ -37,9 +37,8 @@ export default function CategoryDetail() {
       try {
         const blob = await fetch(`${API_URL}/${selected}/${name}`);
         const json = await blob.json();
-        setCategory(json.category);
-        setItems(json.items);
-        setformField({ ...formField, name: json.category.name, description: json.category.description });
+        setItem(json.item);
+        setformField({ ...formField, name: json.item.name, description: json.item.description });
       }
       catch (error) {
         console.error('Error fetching category and items:', error);
@@ -52,7 +51,7 @@ export default function CategoryDetail() {
     if (!decision)
       return;
     try {
-      await fetch(`${API_URL}/${selected}/${category._id}`, { method: 'DELETE' });
+      await fetch(`${API_URL}/${selected}/${item._id}/${item.image.cloudinaryID}`, { method: 'DELETE' });
       navigate('/');
     }
     catch (error) {
@@ -65,13 +64,13 @@ export default function CategoryDetail() {
     try {
       // MUST STEP TO HANDLE MULTIPART FORM DATA (FORM DATA WITH FILE UPLOAD)
       const formData = new FormData();
-      formData.append('id', category._id);
+      formData.append('id', item._id);
       formData.append('name', formField.name);
       formData.append('description', formField.description);
       formData.append('image', formField.image);
-      formData.append('imageID', category.image.cloudinaryID);
+      formData.append('imageID', item.image.cloudinaryID);
 
-      const blob = await fetch(`${API_URL}/${selected}/${category._id}`, {
+      const blob = await fetch(`${API_URL}/${selected}/${item._id}`, {
         method: 'PATCH',
         body: formData,
       });
@@ -80,7 +79,7 @@ export default function CategoryDetail() {
         setformField({ name: '', description: '', image: '' });
         document.querySelectorAll('input[type="file"]').forEach(box => box.value = null);
         const json = await blob.json();
-        setCategory(json.result);
+        setItem(json.result);
         setformField({ ...formField, name: json.result.name, description: json.result.description });
         setEditMode(false);
       }
@@ -105,33 +104,41 @@ export default function CategoryDetail() {
     <>
       <div className="categorySummary">
         <div className="categoryImageContainer">
-          {category.image && <img className="categoryImage" src={category.image.URL} alt="Category Image" />}
+          {item.image && <img className="categoryImage" src={item.image.URL} alt="Item Image" />}
         </div>
         { editMode
           ? (
               <form action="" method="post" onSubmit={handleSubmit} className="formContainer">
-                <h1>{category.name && `Modify ${category.name}`}</h1>
+                <h1>{item.name && `Modify ${item.name}`}</h1>
                 <div><input type="text" name="name" placeholder="Name" value={formField.name} onChange={handleChange} /></div>
                 <div><input type="text" name="description" placeholder="Description" value={formField.description} onChange={handleChange} /></div>
                 <input type="file" name="image" onChange={handleChange} />
                 <div className="buttonContainer">
                   <button type="submit">Update</button>
-                  <button type="button" onClick={() => setEditMode(false) || setformField({ ...formField, name: category.name, description: category.description })}>Cancel</button>
+                  <button type="button" onClick={() => setEditMode(false) || setformField({ ...formField, name: item.name, description: item.description })}>Cancel</button>
                 </div>
               </form>
             )
           : (
               <div className="summary">
-                {category.name && <div className="title">{`Category: ${category.name}`}</div>}
-                {category.description && <div className="description">{category.description}</div>}
-                {category.createdBy === 'Admin' && (
+                {item.name && <div className="title">{`Item: ${item.name}`}</div>}
+                {item.description && <div className="description">{item.description}</div>}
+                {item.price && <div className="price">{`Price: $${item.price}`}</div>}
+                {item.category && (
+                  <div className="description">
+                    Category:
+                    {' '}
+                    <Link to={`/Category/${item.category.name}`} onClick={() => setSelected('Category')}>{item.category.name}</Link>
+                  </div>
+                )}
+                {item.createdBy === 'Admin' && (
                   <div className="description">
                     <b>NOT: </b>
                     Default categories or items cannot be changed or deleted.
                   </div>
                 )}
                 <div className="buttonContainer">
-                  <button type="button" disabled={category.createdBy === 'Admin'} onClick={() => setEditMode(true)}>Edit</button>
+                  <button type="button" disabled={item.createdBy === 'Admin'} onClick={() => setEditMode(true)}>Edit</button>
                   <button type="button" onClick={handleDelete}>Delete</button>
                 </div>
               </div>

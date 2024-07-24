@@ -8,6 +8,7 @@ import Homepage from './pages/homepage/homepage';
 import ErrorPage from './pages/error/error';
 import Create from './pages/create/create';
 import CategoryDetail from './pages/categoryDetail/categoryDetail';
+import ItemDetail from './pages/categoryDetail/itemDetail';
 
 // DEFINE WHICH REACT PAGE TO SERVE WHEN CERTAIN ROUTE REQ.
 const router = createBrowserRouter([
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
       { path: '/', element: <Homepage /> },
       { path: '/create', element: <Create /> },
       { path: '/Category/:name', element: <CategoryDetail /> },
+      { path: '/Item/:name', element: <ItemDetail /> },
     ],
   },
 ]);
