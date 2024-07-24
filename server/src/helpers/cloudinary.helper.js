@@ -11,6 +11,7 @@ exports.handleUpload = async (file) => {
   try {
     const res = await cloudinary.uploader.upload(file, {
       resource_type: 'auto',
+      folder: 'Inventory_App', // Add the 'folder' option here
     });
     return res;
   }
@@ -19,7 +20,6 @@ exports.handleUpload = async (file) => {
   }
 };
 
-// Function to delete an image by public ID
 exports.handleDelete = async (publicId) => {
   try {
     await cloudinary.uploader.destroy(publicId);

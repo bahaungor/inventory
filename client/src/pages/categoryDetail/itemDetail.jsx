@@ -22,6 +22,7 @@ export default function ItemDetail() {
   // CREATE STATES FOR DATA YOU WILL FETCH FROM DATABASE
   const [item, setItem] = useState([]);
   const [items, setItems] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   // CREATE STATES FOR FORM DATA & EDIT MODE
   const [editMode, setEditMode] = useState(false);
@@ -29,6 +30,9 @@ export default function ItemDetail() {
     name: '',
     description: '',
     image: '',
+    category: '',
+    price: '',
+    stock: '',
   });
 
   // FETCH OPERATIONS AFTER COMPONENT MOUNTS MUST BE INSIDE useEffect
@@ -38,10 +42,24 @@ export default function ItemDetail() {
         const blob = await fetch(`${API_URL}/${selected}/${name}`);
         const json = await blob.json();
         setItem(json.item);
-        setformField({ ...formField, name: json.item.name, description: json.item.description });
+        setformField({ ...formField, name: json.item.name, description: json.item.description, category: json.item.category._id, price: json.item.price, stock: json.item.stock });
       }
       catch (error) {
         console.error('Error fetching category and items:', error);
+      }
+    })();
+  }, []); // RUN EFFECT ONCE ON MOUNT & IF VALUE INSIDE [] CHANGES
+
+  // FETCH OPERATIONS AFTER COMPONENT MOUNTS MUST BE INSIDE useEffect
+  useEffect(() => {
+    (async () => {
+      try {
+        const blob = await fetch(`${API_URL}/inventory/Category`);
+        const json = await blob.json();
+        setCategories(json.result);
+      }
+      catch (error) {
+        console.error('Error fetching categories:', error);
       }
     })();
   }, []); // RUN EFFECT ONCE ON MOUNT & IF VALUE INSIDE [] CHANGES
@@ -51,7 +69,11 @@ export default function ItemDetail() {
     if (!decision)
       return;
     try {
-      await fetch(`${API_URL}/${selected}/${item._id}/${item.image.cloudinaryID}`, { method: 'DELETE' });
+      await fetch(`${API_URL}/${selected}/${item._id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageID: item.image.cloudinaryID }),
+      });
       navigate('/');
     }
     catch (error) {
@@ -67,7 +89,11 @@ export default function ItemDetail() {
       formData.append('id', item._id);
       formData.append('name', formField.name);
       formData.append('description', formField.description);
+      formData.append('price', formField.price);
+      formData.append('stock', formField.stock);
+      formData.append('createdBy', item.createdBy);
       formData.append('image', formField.image);
+      formData.append('category', formField.category);
       formData.append('imageID', item.image.cloudinaryID);
 
       const blob = await fetch(`${API_URL}/${selected}/${item._id}`, {
@@ -76,11 +102,12 @@ export default function ItemDetail() {
       });
 
       if (blob.ok) {
-        setformField({ name: '', description: '', image: '' });
+        setformField({ name: '', description: '', image: '', category: '', price: '', stock: '' });
         document.querySelectorAll('input[type="file"]').forEach(box => box.value = null);
         const json = await blob.json();
         setItem(json.result);
-        setformField({ ...formField, name: json.result.name, description: json.result.description });
+        setformField({ ...formField, name: json.result.name, description: json.result.description, category: json.result.category._id, price: json.result.price, stock: json.result.stock });
+        console.log(formField);
         setEditMode(false);
       }
     }
@@ -112,6 +139,16 @@ export default function ItemDetail() {
                 <h1>{item.name && `Modify ${item.name}`}</h1>
                 <div><input type="text" name="name" placeholder="Name" value={formField.name} onChange={handleChange} /></div>
                 <div><input type="text" name="description" placeholder="Description" value={formField.description} onChange={handleChange} /></div>
+                <div><input type="number" name="price" placeholder="Price" value={formField.price} required onChange={handleChange} /></div>
+                <div><input type="number" name="stock" placeholder="Stock" value={formField.stock} required onChange={handleChange} /></div>
+                <div>
+                  <select required name="category" value={formField.category} onChange={handleChange}>
+                    <option disabled value=""> -- Select a category -- </option>
+                    {categories.length > 0 && categories.map(cat => (
+                      <option key={cat._id} value={cat._id}>{cat.name}</option>
+                    ))}
+                  </select>
+                </div>
                 <input type="file" name="image" onChange={handleChange} />
                 <div className="buttonContainer">
                   <button type="submit">Update</button>
@@ -123,23 +160,23 @@ export default function ItemDetail() {
               <div className="summary">
                 {item.name && <div className="title">{`Item: ${item.name}`}</div>}
                 {item.description && <div className="description">{item.description}</div>}
-                {item.price && <div className="price">{`Price: $${item.price}`}</div>}
+                {item.price && <div className="description">{`Price: $${item.price}`}</div>}
+                {item.stock && <div className="description">{`In-Stock: ${item.stock}`}</div>}
                 {item.category && (
                   <div className="description">
-                    Category:
-                    {' '}
+                    {'Category: '}
                     <Link to={`/Category/${item.category.name}`} onClick={() => setSelected('Category')}>{item.category.name}</Link>
                   </div>
                 )}
                 {item.createdBy === 'Admin' && (
                   <div className="description">
                     <b>NOT: </b>
-                    Default categories or items cannot be changed or deleted.
+                    Default items cannot be changed or deleted.
                   </div>
                 )}
                 <div className="buttonContainer">
                   <button type="button" disabled={item.createdBy === 'Admin'} onClick={() => setEditMode(true)}>Edit</button>
-                  <button type="button" onClick={handleDelete}>Delete</button>
+                  <button type="button" disabled={item.createdBy === 'Admin'} onClick={handleDelete}>Delete</button>
                 </div>
               </div>
             )}

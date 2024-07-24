@@ -16,13 +16,18 @@ export default function Create() {
   // IMPORT OUTLET CONTEXT
   const [selected, setSelected] = useOutletContext();
 
-  // CREATE STATE FOR DATA TO FETCH FROM DB & FORM DATA
+  // CREATE STATE FOR DATA TO FETCH FROM DB
   const [categories, setCategories] = useState([]);
+
+  // CREATE STATE FOR FORM DATA & VALIDATION ERRORS
+  const [validationErrors, setValidationErrors] = useState([]);
   const [formField, setformField] = useState({
     name: '',
     description: '',
     image: '',
     category: '',
+    price: '',
+    stock: '',
   });
 
   // FETCH OPERATIONS AFTER COMPONENT MOUNTS MUST BE INSIDE useEffect
@@ -46,6 +51,8 @@ export default function Create() {
       const formData = new FormData();
       formData.append('name', formField.name);
       formData.append('description', formField.description);
+      formData.append('price', formField.price);
+      formData.append('stock', formField.stock);
       formData.append('image', formField.image);
       formData.append('category', formField.category);
 
@@ -55,9 +62,13 @@ export default function Create() {
       });
 
       if (response.ok) {
-        setformField({ name: '', description: '', category: '' });
+        setformField({ name: '', description: '', image: '', category: '', price: '', stock: '' });
         document.querySelectorAll('input[type="file"]').forEach(box => box.value = null);
         navigate('/');
+      }
+      else {
+        const errors = await response.json();
+        setValidationErrors(errors);
       }
     }
     catch (error) {
@@ -82,17 +93,31 @@ export default function Create() {
       <div><input required type="text" name="name" placeholder="Name" value={formField.name} onChange={handleChange} /></div>
       <div><textarea required type="text" name="description" placeholder="Description" value={formField.description} onChange={handleChange} /></div>
       {selected === 'Item' && (
-        <div>
-          <select required name="category" value={formField.category} onChange={handleChange}>
-            <option disabled value=""> -- Select a category -- </option>
-            {categories.length > 0 && categories.map(cat => (
-              <option key={cat._id} value={cat._id}>{cat.name}</option>
-            ))}
-          </select>
-        </div>
+        <>
+          <div><input type="number" name="price" placeholder="Price" value={formField.price} required onChange={handleChange} /></div>
+          <div><input type="number" name="stock" placeholder="Stock" value={formField.stock} required onChange={handleChange} /></div>
+          <div>
+            <select required name="category" value={formField.category} onChange={handleChange}>
+              <option disabled value=""> -- Select a category -- </option>
+              {categories.length > 0 && categories.map(cat => (
+                <option key={cat._id} value={cat._id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
+        </>
       )}
       <input required type="file" name="image" onChange={handleChange} />
-      <button type="submit">Add</button>
+      {validationErrors.length > 0 && (
+        <ul>
+          {validationErrors.map((error, index) => (
+            <li key={index}>{error.msg}</li>
+          ))}
+        </ul>
+      )}
+      <div className="buttonContainer">
+        <button type="submit">Add</button>
+        <button type="button" onClick={() => navigate('/')}>Cancel</button>
+      </div>
     </form>
   );
 }

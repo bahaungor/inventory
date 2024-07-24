@@ -51,8 +51,17 @@ export default function CategoryDetail() {
     const decision = confirm('Are you sure you want to delete this category & all of its items?');
     if (!decision)
       return;
+    if (items.length > 0) {
+      alert('You cannot delete categories with items in it!');
+      return;
+    }
+
     try {
-      await fetch(`${API_URL}/${selected}/${category._id}`, { method: 'DELETE' });
+      await fetch(`${API_URL}/${selected}/${category._id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageID: category.image.cloudinaryID, items }),
+      });
       navigate('/');
     }
     catch (error) {
@@ -68,6 +77,7 @@ export default function CategoryDetail() {
       formData.append('id', category._id);
       formData.append('name', formField.name);
       formData.append('description', formField.description);
+      formData.append('createdBy', category.createdBy);
       formData.append('image', formField.image);
       formData.append('imageID', category.image.cloudinaryID);
 
@@ -127,12 +137,12 @@ export default function CategoryDetail() {
                 {category.createdBy === 'Admin' && (
                   <div className="description">
                     <b>NOT: </b>
-                    Default categories or items cannot be changed or deleted.
+                    Default categories cannot be changed or deleted.
                   </div>
                 )}
                 <div className="buttonContainer">
                   <button type="button" disabled={category.createdBy === 'Admin'} onClick={() => setEditMode(true)}>Edit</button>
-                  <button type="button" onClick={handleDelete}>Delete</button>
+                  <button type="button" disabled={category.createdBy === 'Admin'} onClick={handleDelete}>Delete</button>
                 </div>
               </div>
             )}

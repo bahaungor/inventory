@@ -17,6 +17,7 @@ export default function Homepage() {
   const [selected, setSelected] = useOutletContext();
   const [items, setItems] = useState([]);
 
+  // FETCH OPERATIONS AFTER COMPONENT MOUNTS MUST BE INSIDE useEffect
   useEffect(() => {
     (async () => {
       if (selected) {
@@ -51,7 +52,7 @@ export default function Homepage() {
             <br />
             <div>
               <b>NOT: </b>
-              You can't edit default categories and items.
+              You can't edit nor delete default categories and items.
             </div>
           </ul>
         </div>
@@ -77,9 +78,7 @@ export default function Homepage() {
                 </div>
               )
             : (
-                <div className="loading">
-                  <div className="spinner"></div>
-                </div>
+                <div className="loading"><div className="spinner"></div></div>
               )}
         </div>
       )}

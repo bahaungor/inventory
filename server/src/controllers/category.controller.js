@@ -26,26 +26,28 @@ exports.item_get = asyncHandler(async (req, res, next) => {
 });
 
 exports.item_delete = asyncHandler(async (req, res, next) => {
-  const { selected, imageID } = req.params;
-
-  if (selected === 'Category') {
-    await Promise.all([
-      Category.findByIdAndDelete(req.params.id),
-      handleDelete(imageID),
-    ]);
+  const deleteOptions = { createdBy: { $ne: 'Admin' } };
+  if (req.params.selected === 'Category' && req.body.items.length === 0) {
+    const deletedCategory = await Category.findByIdAndDelete(req.params.id, deleteOptions);
+    if (deletedCategory) { // Check if document was deleted (not created by Admin)
+      await handleDelete(req.body.imageID);
+    }
+    res.json({ result: 'Success' });
   }
 
-  if (selected === 'Item') {
-    await Promise.all([
-      Item.findByIdAndDelete(req.params.id),
-      handleDelete(imageID),
-    ]);
+  if (req.params.selected === 'Item') {
+    const deletedItem = await Item.findByIdAndDelete(req.params.id, deleteOptions);
+    if (deletedItem) { // Check if document was deleted (not created by Admin)
+      await handleDelete(req.body.imageID);
+    }
+    res.json({ result: 'Success' });
   }
-
-  res.json({ result: 'Success' });
 });
 
 exports.item_modify = asyncHandler(async (req, res, next) => {
+  if (req.body.createdBy === 'Admin')
+    return;
+
   // CRAETE VIRTUAL MEMORY FOR FILES TO BE UPLOADED
   const upload = multer({ storage: multer.memoryStorage() });
 
@@ -57,8 +59,8 @@ exports.item_modify = asyncHandler(async (req, res, next) => {
     }
 
     // CONSOLE LOG REQ.FILE & REQ.BODY HERE
-    console.log('req.file : ', req.file);
-    console.log('req.body : ', req.body);
+    // console.log('req.file : ', req.file);
+    // console.log('req.body : ', req.body);
 
     if (req.file) {
       // const b64 = Buffer.Buffer.from(req.file.buffer).toString('base64'); // ORIGINAL IMAGE
@@ -81,6 +83,9 @@ exports.item_modify = asyncHandler(async (req, res, next) => {
         const result = await Item.findByIdAndUpdate(req.body.id, {
           name: req.body.name,
           description: req.body.description,
+          price: req.body.price,
+          stock: req.body.stock,
+          category: req.body.category,
           image: { URL: cldRes.secure_url, cloudinaryID: cldRes.public_id },
         }, { new: true });
         res.json({ result });
@@ -98,9 +103,9 @@ exports.item_modify = asyncHandler(async (req, res, next) => {
       else {
         const result = await Item.findByIdAndUpdate(
           req.body.id,
-          { name: req.body.name, description: req.body.description },
+          { name: req.body.name, description: req.body.description, price: req.body.price, stock: req.body.stock, category: req.body.category },
           { new: true },
-        );
+        ).populate('category');
         res.json({ result });
       }
     }
