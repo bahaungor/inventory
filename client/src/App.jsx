@@ -20,8 +20,8 @@ const router = createBrowserRouter([
       // RENDER element INSIDE <Outlet /> OF PARENT COMPONENT (LAYOUT) WHEN path REQUESTED
       { path: '/', element: <Homepage /> },
       { path: '/create', element: <Create /> },
-      { path: '/Category/:name', element: <CategoryDetail /> },
-      { path: '/Item/:name', element: <ItemDetail /> },
+      { path: '/Category/:id', element: <CategoryDetail /> },
+      { path: '/Item/:id', element: <ItemDetail /> },
     ],
   },
 ]);

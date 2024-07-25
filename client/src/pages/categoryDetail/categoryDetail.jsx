@@ -14,7 +14,7 @@ export default function CategoryDetail() {
   const navigate = useNavigate();
 
   // GET URL PARAMETER
-  const { name } = useParams();
+  const { id } = useParams();
 
   // IMPORT OUTLET CONTEXT
   const [selected, setSelected] = useOutletContext();
@@ -23,8 +23,9 @@ export default function CategoryDetail() {
   const [category, setCategory] = useState([]);
   const [items, setItems] = useState([]);
 
-  // CREATE STATES FOR FORM DATA & EDIT MODE
+  // CREATE STATES FOR FORM DATA & EDIT MODE & VALIDATION ERRORS
   const [editMode, setEditMode] = useState(false);
+  const [validationErrors, setValidationErrors] = useState([]);
   const [formField, setformField] = useState({
     name: '',
     description: '',
@@ -35,7 +36,7 @@ export default function CategoryDetail() {
   useEffect(() => {
     (async () => {
       try {
-        const blob = await fetch(`${API_URL}/${selected}/${name}`);
+        const blob = await fetch(`${API_URL}/inventory/${selected}/${id}`);
         const json = await blob.json();
         setCategory(json.category);
         setItems(json.items);
@@ -48,14 +49,13 @@ export default function CategoryDetail() {
   }, []); // RUN EFFECT ONCE ON MOUNT & IF VALUE INSIDE [] CHANGES
 
   async function handleDelete() {
-    const decision = confirm('Are you sure you want to delete this category & all of its items?');
+    const decision = confirm('Are you sure you want to delete this category?');
     if (!decision)
       return;
     if (items.length > 0) {
       alert('You cannot delete categories with items in it!');
       return;
     }
-
     try {
       await fetch(`${API_URL}/${selected}/${category._id}`, {
         method: 'DELETE',
@@ -94,6 +94,10 @@ export default function CategoryDetail() {
         setformField({ ...formField, name: json.result.name, description: json.result.description });
         setEditMode(false);
       }
+      else {
+        const errors = await blob.json();
+        setValidationErrors(errors.errors.filter(error => error.value !== ''));
+      }
     }
     catch (error) {
       console.error('Error submitting form:', error);
@@ -124,6 +128,13 @@ export default function CategoryDetail() {
                 <div><input type="text" name="name" placeholder="Name" value={formField.name} onChange={handleChange} /></div>
                 <div><input type="text" name="description" placeholder="Description" value={formField.description} onChange={handleChange} /></div>
                 <input type="file" name="image" onChange={handleChange} />
+                {validationErrors.length > 0 && (
+                  <ul className="formErrors">
+                    {validationErrors.map((error, index) => (
+                      <li key={index}>{error.msg}</li>
+                    ))}
+                  </ul>
+                )}
                 <div className="buttonContainer">
                   <button type="submit">Update</button>
                   <button type="button" onClick={() => setEditMode(false) || setformField({ ...formField, name: category.name, description: category.description })}>Cancel</button>
@@ -150,7 +161,7 @@ export default function CategoryDetail() {
       <div className="items">
         <div className="itemContainer">
           { items && items.map(item => (
-            <Link to={`/Item/${item.name}`} key={item._id} className="item" onClick={() => setSelected('Item')}>
+            <Link to={`/Item/${item._id}`} key={item._id} className="item" onClick={() => setSelected('Item')}>
               <div className="imgContainer"><img src={item.image.URL} alt={item.name} /></div>
               <div className="itemText">{item.name}</div>
             </Link>

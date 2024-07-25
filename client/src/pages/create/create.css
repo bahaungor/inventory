@@ -30,3 +30,8 @@
   box-shadow: none;
   background-color: var(--bg3);
 }
+.formErrors {
+  text-align: left;
+  color: crimson;
+  font-size: 1.05rem;
+}

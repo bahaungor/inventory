@@ -1,0 +1,9 @@
+{
+    "outputDirectory": "client",
+    "rewrites": [
+      {
+        "source": "/(.*)",
+        "destination": "/api/server.js"
+      }
+    ]
+  }

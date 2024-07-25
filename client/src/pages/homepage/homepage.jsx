@@ -15,6 +15,8 @@ export default function Homepage() {
 
   // IMPORT OUTLET CONTEXT
   const [selected, setSelected] = useOutletContext();
+
+  // CREATE STATES FOR DATA YOU WILL FETCH FROM DATABASE
   const [items, setItems] = useState([]);
 
   // FETCH OPERATIONS AFTER COMPONENT MOUNTS MUST BE INSIDE useEffect
@@ -52,7 +54,7 @@ export default function Homepage() {
             <br />
             <div>
               <b>NOT: </b>
-              You can't edit nor delete default categories and items.
+              You can't edit/delete default categories/items.
             </div>
           </ul>
         </div>
@@ -65,7 +67,7 @@ export default function Homepage() {
             ? (
                 <div className="itemContainer">
                   { items.map(item => (
-                    <Link to={`/${selected}/${item.name}`} key={item._id} className="item">
+                    <Link to={`/${selected}/${item._id}`} key={item._id} className="item">
                       <div className="imgContainer"><img src={item.image.URL} alt={item.name} /></div>
                       <div className="itemText">
                         {item.name}

@@ -14,7 +14,7 @@ export default function ItemDetail() {
   const navigate = useNavigate();
 
   // GET URL PARAMETER
-  const { name } = useParams();
+  const { id } = useParams();
 
   // IMPORT OUTLET CONTEXT
   const [selected, setSelected] = useOutletContext();
@@ -24,8 +24,9 @@ export default function ItemDetail() {
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  // CREATE STATES FOR FORM DATA & EDIT MODE
+  // CREATE STATES FOR FORM DATA & EDIT MODE & VALIDATION ERRORS
   const [editMode, setEditMode] = useState(false);
+  const [validationErrors, setValidationErrors] = useState([]);
   const [formField, setformField] = useState({
     name: '',
     description: '',
@@ -39,7 +40,7 @@ export default function ItemDetail() {
   useEffect(() => {
     (async () => {
       try {
-        const blob = await fetch(`${API_URL}/${selected}/${name}`);
+        const blob = await fetch(`${API_URL}/inventory/${selected}/${id}`);
         const json = await blob.json();
         setItem(json.item);
         setformField({ ...formField, name: json.item.name, description: json.item.description, category: json.item.category._id, price: json.item.price, stock: json.item.stock });
@@ -107,8 +108,11 @@ export default function ItemDetail() {
         const json = await blob.json();
         setItem(json.result);
         setformField({ ...formField, name: json.result.name, description: json.result.description, category: json.result.category._id, price: json.result.price, stock: json.result.stock });
-        console.log(formField);
         setEditMode(false);
+      }
+      else {
+        const errors = await blob.json();
+        setValidationErrors(errors.errors.filter(error => error.value !== ''));
       }
     }
     catch (error) {
@@ -150,6 +154,13 @@ export default function ItemDetail() {
                   </select>
                 </div>
                 <input type="file" name="image" onChange={handleChange} />
+                {validationErrors.length > 0 && (
+                  <ul className="formErrors">
+                    {validationErrors.map((error, index) => (
+                      <li key={index}>{error.msg}</li>
+                    ))}
+                  </ul>
+                )}
                 <div className="buttonContainer">
                   <button type="submit">Update</button>
                   <button type="button" onClick={() => setEditMode(false) || setformField({ ...formField, name: item.name, description: item.description })}>Cancel</button>
@@ -165,7 +176,7 @@ export default function ItemDetail() {
                 {item.category && (
                   <div className="description">
                     {'Category: '}
-                    <Link to={`/Category/${item.category.name}`} onClick={() => setSelected('Category')}>{item.category.name}</Link>
+                    <Link to={`/Category/${item.category._id}`} onClick={() => setSelected('Category')}>{item.category.name}</Link>
                   </div>
                 )}
                 {item.createdBy === 'Admin' && (

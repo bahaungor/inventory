@@ -68,7 +68,7 @@ export default function Create() {
       }
       else {
         const errors = await response.json();
-        setValidationErrors(errors);
+        setValidationErrors(errors.errors.filter(error => error.value !== ''));
       }
     }
     catch (error) {
@@ -108,7 +108,7 @@ export default function Create() {
       )}
       <input required type="file" name="image" onChange={handleChange} />
       {validationErrors.length > 0 && (
-        <ul>
+        <ul className="formErrors">
           {validationErrors.map((error, index) => (
             <li key={index}>{error.msg}</li>
           ))}

@@ -3,7 +3,7 @@ header {
   font-family: var(--titleFont);
   border-bottom: var(--border);
   background-color: var(--bg2);
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,7 +24,7 @@ header img {
   width: 50px;
 }
 .buttonContainer {
-  padding: 20px;
+  padding: 50px;
   padding-bottom: 0px;
   display: flex;
   justify-content: center;
